@@ -22,6 +22,7 @@ export default function EntryTable({ entries }) {
                   <TableCell align="right">User</TableCell>
                   <TableCell align="right">Category</TableCell>
                   <TableCell align="right">Open</TableCell>
+                  <TableCell align="right">Delete</TableCell>
                </TableRow>
             </TableHead>
             <TableBody>
@@ -37,8 +38,11 @@ export default function EntryTable({ entries }) {
                      <TableCell align="right">{entry.user}</TableCell>
                      <TableCell align="right">{getCategory(entry.category).name}</TableCell>
                      <TableCell sx={{ "padding-top": 0, "padding-bottom": 0 }} align="right">
-                        <EntryModal entry={entry} type="edit" />
+                        <EntryModal entry={entry} type="edit" />                      
                      </TableCell>
+                     <TableCell sx={{ "padding-top": 0, "padding-bottom": 0 }} align="right">
+                        <EntryModal entry={entry} type="delete" />                      
+                     </TableCell>                     
                   </TableRow>
                ))}
             </TableBody>

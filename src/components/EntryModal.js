@@ -13,7 +13,9 @@ import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { useState } from 'react';
 import { categories } from '../utils/categories';
-import { addEntry } from '../utils/mutations';
+
+import { addEntry, updateEntry, deleteEntry } from '../utils/mutations';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 // Modal component for individual entries.
 
@@ -24,7 +26,7 @@ type: Type of entry modal being opened.
    "edit" (for opening or editing an existing entry from table).
 user: User making query (The current logged in user). */
 
-export default function EntryModal({ entry, type, user }) {
+export default function EntryModal({ entry, type, user, sortedBy}) {
 
    // State variables for modal status
 
@@ -53,9 +55,22 @@ export default function EntryModal({ entry, type, user }) {
    // Mutation handlers
 
    const handleAdd = () => {
+      var hypLink;
+      if(!link.startsWith('https://')) {
+         hypLink = 'https://' + link
+         }
+      else {
+         hypLink = link
+      }
+
+      if(!hypLink.includes('.')) {
+         alert('Enter a valid URL link')
+         return;
+      }
+
       const newEntry = {
          name: name,
-         link: link,
+         link: hypLink,
          description: description,
          user: user?.displayName ? user?.displayName : "GenericUser",
          category: category,
@@ -66,9 +81,49 @@ export default function EntryModal({ entry, type, user }) {
       handleClose();
    };
 
-   // TODO: Add Edit Mutation Handler
+   // Add Edit Mutation Handler
+   const handleEdit = () => {
 
-   // TODO: Add Delete Mutation Handler
+      var hypLink;
+      if(!link.startsWith('https://')) {
+         hypLink = 'https://' + link
+         }
+      else {
+         hypLink = link
+      }
+
+      if(!hypLink.includes('.')) {
+         alert('Enter a valid URL link')
+         return;
+      }
+
+      entry.name = name
+      entry.link = hypLink
+      entry.description = description
+      entry.category = category
+
+      // const msg = entry.name + " "  + entry.description;
+      // alert(entry.id);
+      
+      // addEntry(entry).catch(console.error);
+      // TODO: need to get doc id
+      const str = JSON.stringify(entry);
+      alert(str);
+
+      updateEntry(entry).catch(console.error);
+      handleClose();
+   };
+
+   // Delete Mutation Handler
+   const handleDelete = () => {
+      entry.name = name
+      entry.link = link
+      entry.description = description
+      entry.category = category
+      
+      deleteEntry(entry).catch(console.error);
+      handleClose();
+   };
 
    // Button handlers for modal opening and inside-modal actions.
    // These buttons are displayed conditionally based on if adding or editing/opening.
@@ -81,17 +136,25 @@ export default function EntryModal({ entry, type, user }) {
          : type === "add" ? <Button variant="contained" onClick={handleClickOpen}>
             Add entry
          </Button>
+         : type === "sort" ? <Button variant="contained" onClick={handleClickOpen}>
+            Sort Entry
+         </Button>         
+         : type === "delete" ? <IconButton variant="contained" onClick={handleDelete}>
+            <DeleteIcon />
+         </IconButton>
             : null;
 
    const actionButtons =
       type === "edit" ?
          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
+            <Button onClick={handleDelete}>Delete</Button>         
+            <Button onClick={handleEdit}>Update</Button>
+            <Button onClick={handleClose} color='error'>Cancel</Button>
          </DialogActions>
          : type === "add" ?
             <DialogActions>
-               <Button onClick={handleClose}>Cancel</Button>
                <Button variant="contained" onClick={handleAdd}>Add Entry</Button>
+               <Button onClick={handleClose} color='error'>Cancel</Button>
             </DialogActions>
             : null;
 
