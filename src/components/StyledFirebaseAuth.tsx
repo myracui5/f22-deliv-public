@@ -56,7 +56,7 @@ const StyledFirebaseAuth = ({
     };
   }, [firebaseui, uiConfig]);
 
-  // return <div className={className} ref={elementRef} />;
+  return <div className={className} ref={elementRef} />;
 };
 
 export default StyledFirebaseAuth;
